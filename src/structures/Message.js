@@ -20,13 +20,13 @@ class Message extends Base {
 
     _patch(data) {
         this._data = data;
-        
+
         /**
          * MediaKey that represents the sticker 'ID'
          * @type {string}
          */
         this.mediaKey = data.mediaKey;
-        
+
         /**
          * ID that represents the message
          * @type {object}
@@ -255,12 +255,12 @@ class Message extends Base {
     async reload() {
         const newData = await this.client.pupPage.evaluate((msgId) => {
             const msg = window.Store.Msg.get(msgId);
-            if(!msg) return null;
+            if (!msg) return null;
             return window.WWebJS.getMessageModel(msg);
         }, this.id._serialized);
 
-        if(!newData) return null;
-        
+        if (!newData) return null;
+
         this._patch(newData);
         return this;
     }
@@ -272,7 +272,7 @@ class Message extends Base {
     get rawData() {
         return this._data;
     }
-    
+
     /**
      * Returns the Chat this message was sent in
      * @returns {Promise<Chat>}
@@ -341,10 +341,10 @@ class Message extends Base {
      * @param {string} reaction - Emoji to react with. Send an empty string to remove the reaction.
      * @return {Promise}
      */
-    async react(reaction){
+    async react(reaction) {
         await this.client.pupPage.evaluate(async (messageId, reaction) => {
             if (!messageId) { return undefined; }
-            
+
             const msg = await window.Store.Msg.get(messageId);
             await window.Store.sendReactionToMsg(msg, reaction);
         }, this.id._serialized, reaction);
@@ -422,7 +422,7 @@ class Message extends Base {
                     filesize: msg.size
                 };
             } catch (e) {
-                if(e.status && e.status === 404) return undefined;
+                if (e.status && e.status === 404) return undefined;
                 throw e;
             }
         }, this.id._serialized);
@@ -522,7 +522,7 @@ class Message extends Base {
         if (this.type === MessageTypes.PAYMENT) {
             const msg = await this.client.pupPage.evaluate(async (msgId) => {
                 const msg = window.Store.Msg.get(msgId);
-                if(!msg) return null;
+                if (!msg) return null;
                 return msg.serialize();
             }, this.id._serialized);
             return new Payment(this.client, msg);
